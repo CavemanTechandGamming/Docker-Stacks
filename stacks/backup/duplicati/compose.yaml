@@ -1,0 +1,27 @@
+name: duplicati
+
+# Backup scheduler with web UI — separate from Vaultwarden (different role and mounts).
+
+services:
+  duplicati:
+    image: ${DUPLICATI_IMAGE:-lscr.io/linuxserver/duplicati:latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ${DUPLICATI_CONFIG_DIR:-./config}:/config
+      # Default read-only “source” tree — replace with real paths via .env or add more mounts below.
+      - ${DUPLICATI_SOURCE_DIR:-./source}:/source:ro
+    ports:
+      - "${DUPLICATI_PORT:-8200}:8200"
+    networks:
+      - duplicati-net
+
+networks:
+  duplicati-net:
+    driver: bridge

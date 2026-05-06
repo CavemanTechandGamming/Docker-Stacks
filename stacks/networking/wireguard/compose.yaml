@@ -1,0 +1,39 @@
+name: wireguard
+
+# LinuxServer WireGuard — requires a Linux host with WireGuard available to the container (not typical on Docker Desktop alone).
+
+services:
+  wireguard:
+    image: ${WIREGUARD_IMAGE:-lscr.io/linuxserver/wireguard:latest}
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+      SERVERURL: ${WG_SERVERURL:-auto}
+      SERVERPORT: ${WG_SERVERPORT:-51820}
+      PEERS: ${WG_PEERS:-1}
+      PEERDNS: ${WG_PEERDNS:-auto}
+      INTERNAL_SUBNET: ${WG_INTERNAL_SUBNET:-10.13.13.0}
+      ALLOWEDIPS: ${WG_ALLOWEDIPS:-0.0.0.0/0}
+      LOG_CONFS: ${WG_LOG_CONFS:-true}
+    volumes:
+      - ${WG_CONFIG_DIR:-./config}:/config
+      # Uncomment on hosts where the WireGuard module is not loaded and you need host kernel modules:
+      # - /lib/modules:/lib/modules:ro
+    ports:
+      - "${WG_SERVERPORT:-51820}:51820/udp"
+    networks:
+      - wg-net
+
+networks:
+  wg-net:
+    driver: bridge

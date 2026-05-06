@@ -1,0 +1,23 @@
+name: freshrss
+
+services:
+  freshrss:
+    image: ${FRESHRSS_IMAGE:-lscr.io/linuxserver/freshrss:latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ${FRESHRSS_CONFIG_DIR:-./config}:/config
+    ports:
+      - "${FRESHRSS_HTTP_PORT:-8089}:80"
+    networks:
+      - freshrss-net
+
+networks:
+  freshrss-net:
+    driver: bridge

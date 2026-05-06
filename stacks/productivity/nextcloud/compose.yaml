@@ -1,0 +1,66 @@
+name: nextcloud
+
+# LinuxServer Nextcloud + MariaDB. Complete database settings in the web UI on first launch (see README).
+
+services:
+  nextcloud:
+    image: ${NEXTCLOUD_IMAGE:-lscr.io/linuxserver/nextcloud:latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - nextcloud-config:/config
+      - nextcloud-data:/data
+    ports:
+      - "${NEXTCLOUD_HTTPS_PORT:-4443}:443"
+    networks:
+      - nextcloud-net
+
+  db:
+    image: ${MARIADB_IMAGE:-mariadb:10.11}
+    restart: unless-stopped
+    command:
+      - --transaction-isolation=READ-COMMITTED
+      - --log-bin=binlog
+      - --binlog-format=ROW
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?set_MYSQL_ROOT_PASSWORD_in_env}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-nextcloud}
+      MYSQL_USER: ${MYSQL_USER:-nextcloud}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?set_MYSQL_PASSWORD_in_env}
+    volumes:
+      - nextcloud-db:/var/lib/mysql
+    networks:
+      - nextcloud-net
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "healthcheck.sh",
+          "--connect",
+          "--innodb_initialized",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  nextcloud-config:
+  nextcloud-data:
+  nextcloud-db:
+
+networks:
+  nextcloud-net:
+    driver: bridge

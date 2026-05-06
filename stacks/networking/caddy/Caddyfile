@@ -1,0 +1,27 @@
+# Caddy — homelab reverse proxy
+# Docs: https://caddyserver.com/docs/caddyfile
+#
+# Other stacks can join Docker network "homelab_edge" (see README) and you reverse_proxy to their service name.
+# For apps bound only to localhost on the host, use host.docker.internal (Linux: extra_hosts is set in compose).
+
+:80 {
+	respond "Caddy is running. Replace this block with your site addresses, or add new blocks below."
+}
+
+# --- Examples (uncomment and edit) ---
+#
+# LAN-only hostname (set DNS in Pi-hole → Local DNS Records, or client hosts file):
+# jellyfin.lan {
+# 	reverse_proxy jellyfin:8096
+# }
+#
+# Public HTTPS with Let's Encrypt (needs port 80/443 reachable + real DNS A/AAAA to this host):
+# jellyfin.example.com {
+# 	tls your@example.com
+# 	reverse_proxy jellyfin:8096
+# }
+#
+# Proxy to something published only on the Docker host loopback:
+# app.lan {
+# 	reverse_proxy host.docker.internal:8080
+# }

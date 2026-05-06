@@ -1,0 +1,42 @@
+name: vaultwarden
+
+# Bitwarden-compatible password vault — separate stack from backups (different data and threat model).
+
+services:
+  vaultwarden:
+    image: ${VAULTWARDEN_IMAGE:-vaultwarden/server:latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TZ: ${TZ:-UTC}
+      DOMAIN: ${VAULTWARDEN_DOMAIN:?set_VAULTWARDEN_DOMAIN_in_env}
+      ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN:?set_VAULTWARDEN_ADMIN_TOKEN_in_env}
+      SIGNUPS_ALLOWED: ${VAULTWARDEN_SIGNUPS_ALLOWED:-false}
+      INVITATIONS_ALLOWED: ${VAULTWARDEN_INVITATIONS_ALLOWED:-true}
+      WEB_VAULT_ENABLED: "true"
+      ENABLE_WEBSOCKET: ${VAULTWARDEN_ENABLE_WEBSOCKET:-true}
+    volumes:
+      - vaultwarden-data:/data
+    ports:
+      - "${VAULTWARDEN_PORT:-8080}:80"
+    networks:
+      - vaultwarden-net
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://127.0.0.1:80/alive >/dev/null 2>&1 || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  vaultwarden-data:
+
+networks:
+  vaultwarden-net:
+    driver: bridge

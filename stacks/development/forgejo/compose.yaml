@@ -1,0 +1,35 @@
+name: forgejo
+
+# Forgejo — self-hosted Git (Gitea-compatible). SQLite by default; swap to Postgres/MySQL in UI or env for heavier use.
+
+services:
+  forgejo:
+    image: ${FORGEJO_IMAGE:-docker.io/forgejo/forgejo:10}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      USER_UID: ${PUID:-1000}
+      USER_GID: ${PGID:-1000}
+      FORGEJO__server__ROOT_URL: ${FORGEJO_ROOT_URL:?set_FORGEJO_ROOT_URL_in_env}
+      FORGEJO__server__HTTP_PORT: "3000"
+      # Advertised SSH clone port (host publish); listen on 22 inside the container.
+      FORGEJO__server__SSH_PORT: ${FORGEJO_SSH_PORT:-3022}
+      FORGEJO__server__SSH_LISTEN_PORT: "22"
+      FORGEJO__database__DB_TYPE: sqlite3
+      FORGEJO__database__PATH: /data/gitea/gitea.db
+    volumes:
+      - forgejo-data:/data
+    ports:
+      - "${FORGEJO_HTTP_PORT:-3030}:3000"
+      - "${FORGEJO_SSH_PORT:-3022}:22"
+    networks:
+      - forgejo-net
+
+volumes:
+  forgejo-data:
+
+networks:
+  forgejo-net:
+    driver: bridge

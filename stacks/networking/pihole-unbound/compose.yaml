@@ -1,0 +1,60 @@
+name: pihole-unbound
+
+# Pi-hole (blocking + caching) → Unbound (recursive, validating resolver).
+# Unbound pattern aligns with https://github.com/klutchell/unbound-docker/tree/main/examples/pi-hole
+
+services:
+  unbound:
+    image: ${UNBOUND_IMAGE:-docker.io/klutchell/unbound:latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    networks:
+      - dns-internal
+    healthcheck:
+      test: ["CMD", "drill-hc", "@127.0.0.1", "dnssec.works"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+    # Optional: add files under ./unbound/ and uncomment to merge custom Unbound snippets
+    # volumes:
+    #   - ./unbound:/etc/unbound/custom.conf.d:ro
+
+  pihole:
+    image: ${PIHOLE_IMAGE:-pihole/pihole:latest}
+    restart: unless-stopped
+    depends_on:
+      unbound:
+        condition: service_healthy
+    cap_add:
+      - NET_ADMIN
+      - SYS_TIME
+      - SYS_NICE
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TZ: ${TZ:-UTC}
+      FTLCONF_webserver_api_password: ${PIHOLE_WEBPASSWORD:-}
+      FTLCONF_dns_listeningMode: all
+      FTLCONF_dns_upstreams: unbound
+    ports:
+      - "${PIHOLE_DNS_TCP:-53}:53/tcp"
+      - "${PIHOLE_DNS_UDP:-53}:53/udp"
+      - "${PIHOLE_HTTP_PORT:-8080}:80/tcp"
+      - "${PIHOLE_HTTPS_PORT:-8443}:443/tcp"
+      # Uncomment if Pi-hole is your DHCP server (requires router/relay setup).
+      # - "${PIHOLE_DHCP:-67}:67/udp"
+    volumes:
+      - pihole-etc:/etc/pihole
+    networks:
+      - dns-internal
+
+volumes:
+  pihole-etc:
+
+networks:
+  dns-internal:
+    driver: bridge

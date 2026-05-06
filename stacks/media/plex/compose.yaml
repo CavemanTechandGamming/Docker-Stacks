@@ -1,0 +1,30 @@
+name: plex
+
+services:
+  plex:
+    image: ${PLEX_IMAGE:-lscr.io/linuxserver/plex:latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+      TZ: ${TZ:-UTC}
+      VERSION: ${PLEX_VERSION:-docker}
+      PLEX_CLAIM: ${PLEX_CLAIM:-}
+    ports:
+      - "${PLEX_HTTP_PORT:-32400}:32400"
+    volumes:
+      - plex-config:/config
+      - ${PLEX_MEDIA_DIR:-plex-media}:/data
+    networks:
+      - plex-net
+
+volumes:
+  plex-config:
+  plex-media:
+
+networks:
+  plex-net:
+    driver: bridge

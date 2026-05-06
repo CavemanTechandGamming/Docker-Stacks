@@ -1,0 +1,48 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Secrets and keys
+*.pem
+*.key
+*.p12
+*.crt
+secrets/
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+
+# Private homelab roadmap (local planning only — not for GitHub)
+docs/homelab-roadmap.md
+
+# Temporary / local research triage (large unvetted AI export — not for GitHub)
+docs/research-self-hosted-apps.local.md
+
+# Caddy ACME / runtime state (per stack)
+stacks/networking/caddy/data/
+stacks/networking/caddy/config/
+
+# Duplicati local config and optional local source staging (per stack)
+stacks/backup/duplicati/config/
+stacks/backup/duplicati/source/
+
+# WireGuard keys and generated peer configs (per stack)
+stacks/networking/wireguard/config/
+
+# NUT optional local overrides (may contain UPS-specific config)
+stacks/power/nut-upsd/local/
+
+# FreshRSS application data (per stack)
+stacks/productivity/freshrss/config/

@@ -1,0 +1,29 @@
+name: searxng
+
+# Privacy-oriented metasearch. Official image; named volumes so first-run can persist generated config.
+# For Valkey/limiter-based installs see: https://docs.searxng.org/admin/installation-docker.html
+
+services:
+  searxng:
+    image: docker.io/searxng/searxng:${SEARXNG_VERSION:-latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      SEARXNG_BASE_URL: ${SEARXNG_BASE_URL:?set_SEARXNG_BASE_URL_in_env}
+    ports:
+      - "${SEARXNG_PUBLISH_PORT:-8088}:8080"
+    volumes:
+      - searxng-config:/etc/searxng
+      - searxng-data:/var/cache/searxng
+    networks:
+      - searxng-net
+
+volumes:
+  searxng-config:
+  searxng-data:
+
+networks:
+  searxng-net:
+    driver: bridge

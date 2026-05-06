@@ -1,0 +1,30 @@
+name: jellyfin
+
+services:
+  jellyfin:
+    image: ${JELLYFIN_IMAGE:-jellyfin/jellyfin:latest}
+    restart: unless-stopped
+    user: ${JELLYFIN_UID_GID:-1000:1000}
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TZ: ${TZ:-UTC}
+      JELLYFIN_PublishedServerUrl: ${JELLYFIN_PUBLISHED_SERVER_URL:-}
+    ports:
+      - "${JELLYFIN_HTTP_PORT:-8096}:8096"
+    volumes:
+      - jellyfin-config:/config
+      - jellyfin-cache:/cache
+      - ${JELLYFIN_MEDIA_DIR:-jellyfin-media}:/media
+    networks:
+      - jellyfin-net
+
+volumes:
+  jellyfin-config:
+  jellyfin-cache:
+  jellyfin-media:
+
+networks:
+  jellyfin-net:
+    driver: bridge

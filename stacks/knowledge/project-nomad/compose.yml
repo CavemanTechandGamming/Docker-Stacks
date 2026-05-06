@@ -1,0 +1,111 @@
+# Project N.O.M.A.D. — Command Center (management stack)
+# Derived from upstream: https://github.com/Crosstalk-Solutions/project-nomad/blob/main/install/management_compose.yaml
+# Updater expects this project directory mounted at /opt/project-nomad and a compose file named compose.yml.
+
+name: project-nomad
+
+services:
+  admin:
+    image: ${NOMAD_IMAGE:-ghcr.io/crosstalk-solutions/project-nomad:latest}
+    pull_policy: ${NOMAD_PULL_POLICY:-always}
+    container_name: nomad_admin
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "${NOMAD_HTTP_PORT:-8080}:8080"
+    volumes:
+      - ${NOMAD_STORAGE_DIR:-./storage}:/app/storage
+      - /var/run/docker.sock:/var/run/docker.sock
+      - nomad-update-shared:/app/update-shared
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      LOG_LEVEL: ${NOMAD_LOG_LEVEL:-info}
+      APP_KEY: ${NOMAD_APP_KEY:?Set NOMAD_APP_KEY in .env (min 16 characters)}
+      HOST: 0.0.0.0
+      URL: ${NOMAD_URL:?Set NOMAD_URL in .env (e.g. http://192.168.1.10:8080)}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: nomad
+      DB_USER: nomad_user
+      DB_PASSWORD: ${NOMAD_DB_PASSWORD:?Set NOMAD_DB_PASSWORD in .env}
+      DB_NAME: nomad
+      DB_SSL: "false"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      DISABLE_COMPRESSION: ${NOMAD_DISABLE_COMPRESSION:-false}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  dozzle:
+    image: ${DOZZLE_IMAGE:-amir20/dozzle:v10.0}
+    container_name: nomad_dozzle
+    restart: unless-stopped
+    ports:
+      - "${DOZZLE_HTTP_PORT:-9999}:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      DOZZLE_ENABLE_ACTIONS: "false"
+      DOZZLE_ENABLE_SHELL: "false"
+
+  mysql:
+    image: ${MYSQL_IMAGE:-mysql:8.0}
+    container_name: nomad_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
+      MYSQL_DATABASE: nomad
+      MYSQL_USER: nomad_user
+      MYSQL_PASSWORD: ${NOMAD_DB_PASSWORD:?Set NOMAD_DB_PASSWORD in .env}
+    volumes:
+      - ${NOMAD_MYSQL_DIR:-./mysql}:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  redis:
+    image: ${REDIS_IMAGE:-redis:7-alpine}
+    container_name: nomad_redis
+    restart: unless-stopped
+    volumes:
+      - ${NOMAD_REDIS_DIR:-./redis}:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  updater:
+    image: ${NOMAD_UPDATER_IMAGE:-ghcr.io/crosstalk-solutions/project-nomad-sidecar-updater:latest}
+    pull_policy: ${NOMAD_PULL_POLICY:-always}
+    container_name: nomad_updater
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${NOMAD_INSTALL_DIR:-.}:/opt/project-nomad
+      - nomad-update-shared:/shared
+
+  disk-collector:
+    image: ${NOMAD_DISK_COLLECTOR_IMAGE:-ghcr.io/crosstalk-solutions/project-nomad-disk-collector:latest}
+    pull_policy: ${NOMAD_PULL_POLICY:-always}
+    container_name: nomad_disk_collector
+    restart: unless-stopped
+    volumes:
+      - /:/host:ro,rslave
+      - ${NOMAD_STORAGE_DIR:-./storage}:/storage
+
+volumes:
+  nomad-update-shared:
+    driver: local

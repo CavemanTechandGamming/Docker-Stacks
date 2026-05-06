@@ -1,0 +1,36 @@
+name: nut-upsd
+
+# Network UPS Tools (NUT) — upsd + USB driver. Intended for Linux ARM (e.g. Raspberry Pi) with the UPS on USB.
+# Graceful shutdown of the *host* is best done with upsmon on the Pi (see README), not only inside this container.
+
+services:
+  nut-upsd:
+    image: ${NUT_IMAGE:-instantlinux/nut-upsd:latest}
+    restart: unless-stopped
+    privileged: true
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      API_USER: ${NUT_API_USER:-upsmon}
+      API_PASSWORD: ${NUT_API_PASSWORD:?set_NUT_API_PASSWORD_in_env}
+      NAME: ${NUT_UPS_NAME:-ups}
+      DRIVER: ${NUT_DRIVER:-usbhid-ups}
+      SERIAL: ${NUT_SERIAL:-}
+      PORT: ${NUT_PORT:-auto}
+      MAXAGE: ${NUT_MAXAGE:-25}
+      VENDORID: ${NUT_VENDORID:-}
+      DESCRIPTION: ${NUT_DESCRIPTION:-homelab UPS}
+      NUT_DEBUG_LEVEL: ${NUT_DEBUG_LEVEL:-0}
+    ports:
+      - "${NUT_UPSD_PORT:-3493}:3493"
+    volumes:
+      - ${NUT_LOCAL_CONF_DIR:-./local}:/etc/nut/local
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+    networks:
+      - nut-net
+
+networks:
+  nut-net:
+    driver: bridge
