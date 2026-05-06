@@ -1,0 +1,25 @@
+name: restic-rest-server
+
+# restic REST API backend — run this on the homelab; install `restic` on each PC and push backups here.
+# See README for Windows/Linux client examples (research #69 / #131).
+
+services:
+  rest-server:
+    image: ${REST_SERVER_IMAGE:-restic/rest-server:latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      OPTIONS: ${REST_SERVER_OPTIONS:---append-only}
+      DISABLE_AUTHENTICATION: ${DISABLE_AUTHENTICATION:-}
+    volumes:
+      - ${RESTIC_DATA_DIR:-./data}:/data
+    ports:
+      - "${REST_SERVER_PORT:-8000}:8000"
+    networks:
+      - restic-net
+
+networks:
+  restic-net:
+    driver: bridge

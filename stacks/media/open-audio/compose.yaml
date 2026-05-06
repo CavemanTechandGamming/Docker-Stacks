@@ -1,0 +1,20 @@
+name: open-audio
+
+# Self-hosted music: Navidrome (research row 222). Row 223 “OpenAudio” image/repo is not viable — see README.
+
+services:
+  navidrome:
+    image: ${NAVIDROME_IMAGE:-deluan/navidrome:latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    user: "${NAVIDROME_PUID:-1000}:${NAVIDROME_PGID:-1000}"
+    ports:
+      - "${NAVIDROME_PORT:-4533}:4533"
+    environment:
+      ND_PORT: 4533
+      ND_LOGLEVEL: ${ND_LOGLEVEL:-info}
+    volumes:
+      - ${NAVIDROME_DATA_DIR:-./data}:/data
+      - ${NAVIDROME_MUSIC_DIR:-./music}:/music:ro

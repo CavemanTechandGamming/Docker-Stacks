@@ -1,0 +1,17 @@
+name: home-assistant
+
+services:
+  homeassistant:
+    image: ${HOMEASSISTANT_IMAGE:-ghcr.io/home-assistant/home-assistant:stable}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TZ: ${TZ:-UTC}
+    ports:
+      - "${HOMEASSISTANT_PORT:-8123}:8123"
+    volumes:
+      - ${HOMEASSISTANT_CONFIG_DIR:-./config}:/config
+    # For Z-Wave/Zigbee USB sticks, Bluetooth, or mDNS discovery on Linux, see README
+    # (host networking, device mappings, or privileged mode).

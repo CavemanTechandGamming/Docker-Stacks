@@ -34,15 +34,56 @@ docs/research-self-hosted-apps.local.md
 stacks/networking/caddy/data/
 stacks/networking/caddy/config/
 
+# Homepage config (YAML, icons; may reference local secrets via env)
+stacks/networking/homepage/config/
+
 # Duplicati local config and optional local source staging (per stack)
 stacks/backup/duplicati/config/
 stacks/backup/duplicati/source/
 
+# Restic REST server repositories and .htpasswd (per stack)
+stacks/backup/restic-rest-server/data/
+
 # WireGuard keys and generated peer configs (per stack)
 stacks/networking/wireguard/config/
+
+# OpenConnect (ocserv) server config and credentials (per stack)
+stacks/networking/openconnect/config/
 
 # NUT optional local overrides (may contain UPS-specific config)
 stacks/power/nut-upsd/local/
 
 # FreshRSS application data (per stack)
 stacks/productivity/freshrss/config/
+
+# Audiobookshelf library and runtime data (per stack)
+stacks/media/audiobookshelf/audiobooks/
+stacks/media/audiobookshelf/podcasts/
+stacks/media/audiobookshelf/metadata/
+stacks/media/audiobookshelf/config/
+
+# Stable Diffusion WebUI bind mounts (per stack)
+stacks/ai/automatic1111-webui/models/
+stacks/ai/automatic1111-webui/outputs/
+stacks/ai/automatic1111-webui/extensions/
+stacks/ai/automatic1111-webui/inputs/
+stacks/ai/automatic1111-webui/embeddings/
+stacks/ai/automatic1111-webui/localizations/
+stacks/ai/automatic1111-webui/textual_inversion_templates/
+
+# ComfyUI workspace (models, custom nodes, outputs; per stack)
+stacks/ai/comfyui/workspace/
+
+# Home Assistant config (per stack)
+stacks/home/home-assistant/config/
+
+# Kavita config and library (per stack)
+stacks/media/kavita/config/
+stacks/media/kavita/data/
+
+# OpenBooks downloads (per stack)
+stacks/media/open-ebooks/books/
+
+# Navidrome (“open-audio” stack) data and music roots (per stack)
+stacks/media/open-audio/data/
+stacks/media/open-audio/music/

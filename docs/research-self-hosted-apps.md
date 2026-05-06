@@ -23,17 +23,21 @@ Cross-check before duplicating effort:
 | Template | `_template/` |
 | DNS / ads | `networking/pihole-unbound/` |
 | Reverse proxy | `networking/caddy/` |
-| VPN | `networking/wireguard/` |
+| Homelab dashboard | `networking/homepage/` ([Homepage](https://gethomepage.dev/)) |
+| Docker management UI | `networking/portainer/` |
+| VPN | `networking/wireguard/`, `networking/openconnect/` |
 | Passwords | `security/vaultwarden/` |
 | Backups (UI) | `backup/duplicati/` |
+| Backups (restic target) | `backup/restic-rest-server/` |
 | Files / groupware | `productivity/nextcloud/` |
 | RSS | `productivity/freshrss/` |
 | Git hosting | `development/forgejo/` |
 | Meta-search | `search/searxng/` |
-| Uptime | `monitoring/uptime-kuma/` |
+| Uptime / metrics / logs | `monitoring/uptime-kuma/`, `monitoring/prometheus-grafana/` |
 | Photos | `media/immich/` |
-| Media | `media/plex/`, `media/jellyfin/` |
-| Local AI | `ai/ollama-open-webui/` |
+| Media | `media/plex/`, `media/jellyfin/`, `media/audiobookshelf/`, `media/kavita/`, `media/open-ebooks/`, `media/open-audio/` |
+| Home automation | `home/home-assistant/` |
+| Local AI | `ai/ollama-open-webui/`, `ai/openclaw/`, `ai/paperclip/`, `ai/automatic1111-webui/`, `ai/comfyui/` |
 | Offline knowledge | `knowledge/project-nomad/` |
 | UPS / NUT | `power/nut-upsd/` |
 

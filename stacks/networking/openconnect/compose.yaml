@@ -1,0 +1,24 @@
+name: openconnect
+
+# OpenConnect VPN server (ocserv). Works on Raspberry Pi (arm64) and amd64.
+# See README: research “PiVPN-OpenConnect” / chriswayg image is unavailable.
+
+services:
+  ocserv:
+    image: ${OCSERV_IMAGE:-cherts/ocserv:latest}
+    restart: unless-stopped
+    privileged: true
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TZ: ${TZ:-UTC}
+      HC_TCP_PORT: ${HC_TCP_PORT:-443}
+      HC_UDP_PORT: ${HC_UDP_PORT:-443}
+      HC_SRV_CN: ${HC_SRV_CN:-VPN}
+      HC_NO_TEST_USER: ${HC_NO_TEST_USER:-}
+    ports:
+      - "${OCSERV_PUBLISH_TCP_PORT:-443}:443"
+      - "${OCSERV_PUBLISH_UDP_PORT:-443}:443/udp"
+    volumes:
+      - ${OCSERV_CONFIG_DIR:-./config}:/etc/ocserv

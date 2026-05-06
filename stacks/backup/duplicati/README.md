@@ -29,6 +29,13 @@ Vaultwarden’s SQLite/volume should be **included in a Duplicati job** (or anot
 
 5. Create a backup job: source `/source` (and any extra mount points), choose destination, **encryption passphrase**, and schedule.
 
+## Backing up **client** computers (Windows / Mac / Linux)
+
+The stack above runs Duplicati **on the server** and only sees files you **mount** into the container. To back up **your PC’s disks** to the homelab, use either:
+
+1. **Duplicati on the PC** — install [Duplicati](https://duplicati.com/) locally and set the **backup destination** to something your server exposes (SMB share, SFTP, WebDAV, S3-compatible, etc.), or  
+2. **[Restic REST server](../restic-rest-server/)** — run the server stack on the homelab, install the **restic** CLI on the PC, and `restic backup` to a `rest:` URL (see that stack’s README).
+
 ## Mounting more than one source
 
 Duplicate the volume pattern in `compose.yaml`, for example:

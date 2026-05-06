@@ -6,10 +6,11 @@ Each category folder has a **`README.md`** that explains what belongs there and 
 
 | Category | What belongs here |
 |----------|-------------------|
-| [`ai/`](ai/) | Local LLMs, chat UIs, and other self-hosted AI |
-| [`media/`](media/) | Video, music, photos — libraries and streaming |
+| [`ai/`](ai/) | Local LLMs, chat UIs, agent gateways (e.g. OpenClaw, Paperclip), and related AI tooling |
+| [`media/`](media/) | Video, music, photos, audiobooks, ebooks — libraries and streaming |
+| [`home/`](home/) | Home automation and IoT (e.g. Home Assistant) |
 | [`backup/`](backup/) | Backup UIs and backup-related tooling |
-| [`networking/`](networking/) | DNS, reverse proxy, VPN — how traffic enters the lab |
+| [`networking/`](networking/) | DNS, reverse proxy, VPN (WireGuard, OpenConnect), homelab dashboard (Homepage), Docker UI (Portainer) — how traffic enters the lab |
 | [`security/`](security/) | Identity-adjacent services (e.g. passwords, auth helpers) |
 | [`productivity/`](productivity/) | Files, feeds, calendars — day-to-day collaboration |
 | [`development/`](development/) | Git forge, CI-adjacent tools, developer infrastructure |

@@ -1,0 +1,17 @@
+name: portainer
+
+services:
+  portainer:
+    image: ${PORTAINER_IMAGE:-portainer/portainer-ce:latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "${PORTAINER_HTTPS_PORT:-9443}:9443"
+    volumes:
+      - ${DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock
+      - portainer-data:/data
+
+volumes:
+  portainer-data:

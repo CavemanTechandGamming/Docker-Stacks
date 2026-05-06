@@ -1,0 +1,27 @@
+name: audiobookshelf
+
+# Audiobookshelf — self-hosted audiobook and podcast server.
+# https://github.com/advplyr/audiobookshelf
+
+services:
+  audiobookshelf:
+    image: ${AUDIOBOOKSHELF_IMAGE:-ghcr.io/advplyr/audiobookshelf:latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TZ: ${TZ:-UTC}
+    ports:
+      - "${ABS_HTTP_PORT:-13378}:80"
+    volumes:
+      - ${ABS_AUDIOBOOKS_DIR:-./audiobooks}:/audiobooks
+      - ${ABS_PODCASTS_DIR:-./podcasts}:/podcasts
+      - ${ABS_METADATA_DIR:-./metadata}:/metadata
+      - ${ABS_CONFIG_DIR:-./config}:/config
+    networks:
+      - audiobookshelf-net
+
+networks:
+  audiobookshelf-net:
+    driver: bridge

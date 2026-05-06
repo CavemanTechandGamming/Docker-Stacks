@@ -1,106 +1,98 @@
 # Docker Stacks
 
-A curated collection of production-minded Docker Compose stacks for self-hosting and small team environments.
+A curated set of **Docker Compose** stacks for self-hosting: homelab services, media, backups, local AI, and edge networking. Layout and docs are meant to be easy to adopt on a fresh clone and safe to share with a small team or friends.
 
-This repository is designed for personal use and sharing with friends, while maintaining professional standards in structure, documentation, and operational safety.
+## Prerequisites
 
-## Install Docker
-
-You need **Docker** with the **Compose V2** CLI (`docker compose`, not the legacy `docker-compose` standalone binary).
+You need **Docker Engine** and the **Compose V2** plugin (`docker compose`). The legacy standalone `docker-compose` binary is not assumed.
 
 | Step | Action |
 |------|--------|
-| 1 | Download and install using Docker’s official guides: **[Get Docker](https://docs.docker.com/get-docker/)** |
-| 2 | On **Windows** or **macOS**, use **[Docker Desktop](https://www.docker.com/products/docker-desktop/)** (installs Engine and Compose together) |
-| 3 | On **Linux**, install **[Docker Engine](https://docs.docker.com/engine/install/)** and the **[Compose plugin](https://docs.docker.com/compose/install/linux/)** |
-| 4 | Confirm in a terminal: `docker version` and `docker compose version` |
+| 1 | Follow Docker’s **[Get Docker](https://docs.docker.com/get-docker/)** overview for your platform. |
+| 2 | On **Windows** or **macOS**, **[Docker Desktop](https://www.docker.com/products/docker-desktop/)** bundles Engine and Compose. |
+| 3 | On **Linux**, install **[Docker Engine](https://docs.docker.com/engine/install/)** and the **[Compose plugin](https://docs.docker.com/compose/install/linux/)**. |
+| 4 | Confirm: `docker version` and `docker compose version`. |
 
-For a concise platform-by-platform walkthrough, see **[docs/docker-install.md](docs/docker-install.md)**.
+A shorter, platform-oriented walkthrough lives in **[docs/docker-install.md](docs/docker-install.md)**.
 
-## Goals
+## Repository layout
 
-- Keep stacks easy to run and easy to maintain.
-- Use clear, consistent Compose conventions.
-- Favor secure defaults where practical.
-- Make onboarding simple for non-experts.
-
-## Repository Structure
-
-Stacks live under **`stacks/<category>/<stack-name>/`** (see [`stacks/README.md`](stacks/README.md) for categories). Each category folder includes a **`README.md`** that explains what belongs there (folders usually list above that file in directory views).
+Stacks live under **`stacks/<category>/<stack-name>/`**. Each **category** has a **`README.md`** that lists the stacks in that group. Each **stack** normally includes **`compose.yaml`**, **`.env.example`**, and a **`README.md`** with quick start steps and **official upstream** links.
 
 ```text
 .
-|-- stacks/
-|   |-- README.md           # index of categories
-|   |-- _template/
-|   |   |-- compose.yaml
-|   |   `-- .env.example
-|   |-- <category>/         # e.g. media/, networking/, backup/
-|   |   |-- README.md       # what belongs in this category
-|   |   `-- <stack-name>/
-|   |       |-- compose.yaml
-|   |       `-- .env.example
-|-- docs/
-|   |-- docker-install.md
-|   `-- standards.md
-`-- README.md
+├── stacks/
+│   ├── README.md              # category index
+│   ├── _template/             # copy when adding a new stack
+│   └── <category>/
+│       ├── README.md
+│       └── <stack-name>/
+│           ├── compose.yaml
+│           ├── .env.example
+│           └── README.md
+├── docs/
+│   ├── docker-install.md
+│   ├── standards.md           # compose and documentation conventions
+│   └── research-self-hosted-apps.md  # how triage notes relate to stacks
+└── README.md
 ```
 
-## Quick Start
+For the full category table (AI, media, networking, backup, and so on), see **[stacks/README.md](stacks/README.md)**.
 
-1. Clone the repository.
-2. Copy a stack template or choose an existing stack under `stacks/<category>/`.
-3. Duplicate `.env.example` to `.env` and customize values.
-4. Start the stack from its folder:
+## Quick start
 
-```bash
-docker compose up -d
-```
+1. Clone this repository.
+2. Open the stack you want under **`stacks/<category>/<stack-name>/`**.
+3. Copy **`.env.example`** to **`.env`** and edit values (never commit real secrets; `.env` is ignored by default).
+4. From that stack directory:
 
-5. Check service health and logs:
+   ```bash
+   docker compose up -d
+   ```
 
-```bash
-docker compose ps
-docker compose logs -f
-```
+5. Inspect status and logs:
 
-## Compose Standards
+   ```bash
+   docker compose ps
+   docker compose logs -f
+   ```
 
-Each stack should follow these baseline practices:
+Some stacks assume a **Linux** host or specific hardware (for example VPN or GPU services). Always read the stack’s **`README.md`** before exposing ports to the internet.
 
-- Use `compose.yaml` as the primary filename.
-- Keep service names explicit and stable.
-- Define persistent volumes intentionally.
-- Avoid hardcoded secrets in Compose files.
-- Use `.env.example` to document required configuration.
-- Add `healthcheck` where appropriate.
-- Add restart policies for long-running services.
-- Pin image tags where stability matters.
+## Design goals
 
-See `docs/standards.md` for detailed guidance.
+- **Predictable layout** — same filenames and patterns from stack to stack.
+- **Sensible defaults** — restart policies, documented env vars, clear ports and volumes.
+- **Upstream-first docs** — each stack README links to official projects and install guides.
+- **Operational clarity** — when a stack only fits certain hosts (Pi, NVIDIA, LAN-only), that is called out in the stack README.
 
-## Security Notes
+## Compose conventions
 
-- Never commit real secrets or private keys.
-- Review published ports and expose only what is needed.
-- Prefer internal Docker networks for service-to-service traffic.
-- Keep container images updated and track breaking changes.
+Baseline expectations for stacks in this repo:
 
-## Contributing (Friends Welcome)
+- Primary Compose filename: **`compose.yaml`**.
+- Stable service names; intentional volumes and port mappings.
+- No committed secrets; use **`.env.example`** as the contract for configuration.
+- **`restart: unless-stopped`** (or equivalent) for long-running services where it makes sense.
+- Pin image tags when you care about reproducible upgrades.
 
-If you add a stack:
+Details: **[docs/standards.md](docs/standards.md)**.
 
-1. Start from `stacks/_template/`.
-2. Add the new stack under the best-fitting **`stacks/<category>/`** folder; update that category’s `README.md` with a link to the new stack.
-3. Keep names and file layout consistent.
-4. Include a short stack-specific README if setup is non-trivial, with an **Official references** section linking the upstream project repo (and website/docs where helpful).
-5. Verify startup with `docker compose config` before committing.
+## Security
 
-Each stack folder includes a `README.md` that points to the **official upstream** projects (and third-party write-ups only when useful, e.g. Project Nomad).
+- Treat **`.env`**, VPN keys, and app data directories as sensitive; they are gitignored where bind mounts would otherwise pollute commits.
+- Expose only the ports you need; prefer a reverse proxy and TLS at the edge for browser-facing services.
+- Keep images updated and read upstream release notes before major tag bumps.
 
-## Roadmap
+## Contributing
 
-- Add core starter stacks (reverse proxy, monitoring, media, automation).
-- Add backup and restore patterns.
-- Add CI checks for Compose validation.
+To add or extend a stack:
 
+1. Start from **`stacks/_template/`**.
+2. Place the new folder under the appropriate **`stacks/<category>/`** and add a bullet link in that category’s **`README.md`**.
+3. Include a stack **`README.md`** with quick start, host requirements, and an **Official references** section.
+4. Run **`docker compose config`** in the stack directory before committing.
+
+## Research and planning
+
+**[docs/research-self-hosted-apps.md](docs/research-self-hosted-apps.md)** explains how optional local triage files relate to this repo (for example a large export kept out of Git). Use it as a guide for turning research into a concrete stack under **`stacks/`**.

@@ -1,0 +1,20 @@
+name: open-ebooks
+
+# OpenBooks (evan-buss): web UI to search/download from IRC Highway #ebook — not an OPDS host.
+# See README: triage row “OpenEBOOKS” / image openebooks/openebooks is not available.
+
+services:
+  openbooks:
+    image: ${OPENBOOKS_IMAGE:-evanbuss/openbooks:latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "${OPENBOOKS_PORT:-8080}:80"
+    volumes:
+      - ${OPENBOOKS_BOOKS_DIR:-./books}:/books
+    command:
+      - "--persist"
+      - "--name"
+      - "${OPENBOOKS_IRC_NAME:-change-me-irc-nick}"

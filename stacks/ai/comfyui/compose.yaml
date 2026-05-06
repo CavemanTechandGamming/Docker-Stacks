@@ -1,0 +1,30 @@
+name: comfyui
+
+services:
+  comfyui:
+    image: ${COMFYUI_IMAGE:-ghcr.io/ai-dock/comfyui:latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TZ: ${TZ:-UTC}
+      WORKSPACE: ${WORKSPACE:-/workspace}
+      AUTO_UPDATE: ${AUTO_UPDATE:-false}
+      COMFYUI_PORT_HOST: ${COMFYUI_INTERNAL_PORT:-8188}
+      COMFYUI_ARGS: ${COMFYUI_ARGS:-}
+      WEB_ENABLE_AUTH: ${WEB_ENABLE_AUTH:-false}
+      WEB_USER: ${WEB_USER:-}
+      WEB_PASSWORD: ${WEB_PASSWORD:-}
+      HF_TOKEN: ${HF_TOKEN:-}
+      CIVITAI_TOKEN: ${CIVITAI_TOKEN:-}
+    ports:
+      - "${COMFYUI_PORT:-8188}:${COMFYUI_INTERNAL_PORT:-8188}"
+    volumes:
+      - ${WORKSPACE_DIR:-./workspace}:${WORKSPACE:-/workspace}
+    shm_size: "2gb"
+    # Uncomment on Linux hosts with NVIDIA Container Toolkit (GPU inference).
+    # gpus: all
+    # AMD / Intel GPU passthrough (Linux): uncomment if needed per ai-dock docs.
+    # devices:
+    #   - /dev/dri:/dev/dri

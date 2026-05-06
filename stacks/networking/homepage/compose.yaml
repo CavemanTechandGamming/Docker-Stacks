@@ -1,0 +1,27 @@
+name: homepage
+
+# Homepage — highly customizable application dashboard (gethomepage.dev).
+# Put it behind Caddy (or another proxy) with auth/TLS for anything beyond trusted LAN.
+
+services:
+  homepage:
+    image: ${HOMEPAGE_IMAGE:-ghcr.io/gethomepage/homepage:latest}
+    container_name: ${HOMEPAGE_CONTAINER_NAME:-homepage}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      # Comma-separated hosts (with port if non-default) that may serve this instance.
+      # localhost / 127.0.0.1 are always allowed; add LAN IP or FQDN for other URLs.
+      HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS:-}
+    ports:
+      - "${HOMEPAGE_PORT:-3000}:3000"
+    volumes:
+      - ${HOMEPAGE_CONFIG_DIR:-./config}:/app/config
+    networks:
+      - homepage-net
+
+networks:
+  homepage-net:
+    driver: bridge

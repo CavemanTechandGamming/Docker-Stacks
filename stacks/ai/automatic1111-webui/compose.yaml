@@ -1,0 +1,28 @@
+name: automatic1111-webui
+
+services:
+  webui:
+    image: ${WEBUI_IMAGE:-universonic/stable-diffusion-webui:latest}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TZ: ${TZ:-UTC}
+    ports:
+      - "${WEBUI_PORT:-8080}:8080"
+    volumes:
+      - ${MODELS_DIR:-./models}:/app/stable-diffusion-webui/models
+      - ${OUTPUTS_DIR:-./outputs}:/app/stable-diffusion-webui/outputs
+      - ${EXTENSIONS_DIR:-./extensions}:/app/stable-diffusion-webui/extensions
+      - ${INPUTS_DIR:-./inputs}:/app/stable-diffusion-webui/inputs
+      - ${EMBEDDINGS_DIR:-./embeddings}:/app/stable-diffusion-webui/embeddings
+      - ${LOCALIZATIONS_DIR:-./localizations}:/app/stable-diffusion-webui/localizations
+      - ${TEXTUAL_INVERSION_DIR:-./textual_inversion_templates}:/app/stable-diffusion-webui/textual_inversion_templates
+    shm_size: "2gb"
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    # Uncomment on Linux hosts with NVIDIA Container Toolkit (GPU inference).
+    # gpus: all
