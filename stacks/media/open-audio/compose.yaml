@@ -17,4 +17,7 @@ services:
       ND_LOGLEVEL: ${ND_LOGLEVEL:-info}
     volumes:
       - ${NAVIDROME_DATA_DIR:-./data}:/data
-      - ${NAVIDROME_MUSIC_DIR:-./music}:/music:ro
+      - type: bind
+        source: ${NAVIDROME_MUSIC_DIR:-./music}
+        target: /music
+        read_only: true

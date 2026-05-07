@@ -28,7 +28,9 @@ services:
     ports:
       - "${NUT_UPSD_PORT:-3493}:3493"
     volumes:
-      - ${NUT_LOCAL_CONF_DIR:-./local}:/etc/nut/local
+      - type: bind
+        source: ${NUT_LOCAL_CONF_DIR:-./local}
+        target: /etc/nut/local
     devices:
       - /dev/bus/usb:/dev/bus/usb
     networks:

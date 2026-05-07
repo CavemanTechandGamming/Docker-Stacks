@@ -16,7 +16,10 @@ services:
     volumes:
       - ${DUPLICATI_CONFIG_DIR:-./config}:/config
       # Default read-only “source” tree — replace with real paths via .env or add more mounts below.
-      - ${DUPLICATI_SOURCE_DIR:-./source}:/source:ro
+      - type: bind
+        source: ${DUPLICATI_SOURCE_DIR:-./source}
+        target: /source
+        read_only: true
     ports:
       - "${DUPLICATI_PORT:-8200}:8200"
     networks:
