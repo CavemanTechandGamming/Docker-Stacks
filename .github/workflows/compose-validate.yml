@@ -1,0 +1,28 @@
+# Validates Compose file syntax and merge resolution without requiring secrets.
+name: Compose validate
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  compose-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate each stack
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r -d '' file; do
+            dir=$(dirname "$file")
+            base=$(basename "$file")
+            echo "::group::$dir ($base)"
+            (cd "$dir" && docker compose -f "$base" config --no-interpolate >/dev/null)
+            echo "::endgroup::"
+            count=$((count + 1))
+          done < <(find stacks -type f \( -name compose.yaml -o -name compose.yml \) -print0)
+
+          echo "Validated $count Compose project(s)."

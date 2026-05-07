@@ -39,7 +39,8 @@ Cross-check before duplicating effort:
 | Home automation | `home/home-assistant/` |
 | Local AI | `ai/ollama-open-webui/`, `ai/openclaw/`, `ai/paperclip/`, `ai/automatic1111-webui/`, `ai/comfyui/` |
 | Offline knowledge | `knowledge/project-nomad/` |
-| UPS / NUT | `power/nut-upsd/` |
+| UPS / NUT master | `power/nut-master/` |
+| UPS / NUT slave | `power/nut-slave/` |
 
 Research names that overlap (different branding, same role): Pi-hole, Jellyfin, Plex, Nextcloud, WireGuard, Vaultwarden, Caddy, SearXNG, FreshRSS, Gitea → Forgejo, etc.
 

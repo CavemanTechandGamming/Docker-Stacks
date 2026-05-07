@@ -1,13 +1,16 @@
-name: nut-upsd
+name: nut-master
 
-# Network UPS Tools (NUT) — upsd + USB driver. Intended for Linux ARM (e.g. Raspberry Pi) with the UPS on USB.
-# Graceful shutdown of the *host* is best done with upsmon on the Pi (see README), not only inside this container.
+# NUT master — USB driver + upsd + upsmon (instantlinux/nut-upsd runs upsmon -F after upsd starts).
+# Pair with stacks/power/nut-slave/ on other LAN hosts that share the same UPS power.
+# Graceful shutdown of the Docker *host* requires SHUTDOWNCMD / privileges — see README (optional pid: host, local/upsmon.conf).
 
 services:
-  nut-upsd:
+  nut-master:
     image: ${NUT_IMAGE:-instantlinux/nut-upsd:latest}
     restart: unless-stopped
     privileged: true
+    # Uncomment on a dedicated NUT Pi so upsmon's SHUTDOWNCMD halts the machine, not only the container namespace.
+    # pid: host
     env_file:
       - path: .env
         required: false

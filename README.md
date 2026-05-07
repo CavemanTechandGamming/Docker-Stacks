@@ -15,26 +15,42 @@ You need **Docker Engine** and the **Compose V2** plugin (`docker compose`). The
 
 A shorter, platform-oriented walkthrough lives in **[docs/docker-install.md](docs/docker-install.md)**.
 
+**All documentation:** **[docs/README.md](docs/README.md)** — index of guides, standards, and research notes.
+
+**Suggested stacks:** **[docs/suggested-stacks-beginner.md](docs/suggested-stacks-beginner.md)** → **[docs/suggested-stacks-intermediate.md](docs/suggested-stacks-intermediate.md)** → **[docs/suggested-stacks-production.md](docs/suggested-stacks-production.md)** → **[docs/suggested-stacks-split-host.md](docs/suggested-stacks-split-host.md)** (multi-machine / **NUT** / UPS placement—companion to production). The first three stand alone for single-host layouts; **split-host** builds on that mental model.
+
 ## Repository layout
 
 Stacks live under **`stacks/<category>/<stack-name>/`**. Each **category** has a **`README.md`** that lists the stacks in that group. Each **stack** normally includes **`compose.yaml`**, **`.env.example`**, and a **`README.md`** with quick start steps and **official upstream** links.
 
 ```text
 .
+├── LICENSE                    # MIT — repo config and docs (not upstream apps)
+├── README.md
+├── CONTRIBUTING.md            # PR checklist and stack additions
+├── .github/
+│   └── workflows/
+│       └── compose-validate.yml   # CI: docker compose config --no-interpolate
+├── docs/
+│   ├── README.md              # documentation index (start here)
+│   ├── docker-install.md
+│   ├── standards.md           # compose and documentation conventions
+│   ├── suggested-stacks-beginner.md
+│   ├── suggested-stacks-intermediate.md
+│   ├── suggested-stacks-production.md
+│   ├── suggested-stacks-split-host.md   # multi-machine; after production alphabetically
+│   ├── research-self-hosted-apps.md
+│   └── my-active-stacks.md    # optional personal inventory template
 ├── stacks/
 │   ├── README.md              # category index
 │   ├── _template/             # copy when adding a new stack
 │   └── <category>/
 │       ├── README.md
 │       └── <stack-name>/
-│           ├── compose.yaml
+│           ├── compose.yaml   # (rare: compose.yml in a few stacks)
 │           ├── .env.example
 │           └── README.md
-├── docs/
-│   ├── docker-install.md
-│   ├── standards.md           # compose and documentation conventions
-│   └── research-self-hosted-apps.md  # how triage notes relate to stacks
-└── README.md
+└── ...
 ```
 
 For the full category table (AI, media, networking, backup, and so on), see **[stacks/README.md](stacks/README.md)**.
@@ -86,13 +102,16 @@ Details: **[docs/standards.md](docs/standards.md)**.
 
 ## Contributing
 
-To add or extend a stack:
-
-1. Start from **`stacks/_template/`**.
-2. Place the new folder under the appropriate **`stacks/<category>/`** and add a bullet link in that category’s **`README.md`**.
-3. Include a stack **`README.md`** with quick start, host requirements, and an **Official references** section.
-4. Run **`docker compose config`** in the stack directory before committing.
+See **[CONTRIBUTING.md](CONTRIBUTING.md)** for pull-request expectations, how to validate Compose locally, and how to add a stack (**`stacks/_template/`**, category **`README.md`**, **`docker compose config --no-interpolate`** before commit).
 
 ## Research and planning
 
 **[docs/research-self-hosted-apps.md](docs/research-self-hosted-apps.md)** explains how optional local triage files relate to this repo (for example a large export kept out of Git). Use it as a guide for turning research into a concrete stack under **`stacks/`**.
+
+A personal **“what I run”** checklist (optional): **[docs/my-active-stacks.md](docs/my-active-stacks.md)**.
+
+## License
+
+Repository **Compose files, documentation, and supporting snippets** are licensed under the **[MIT License](LICENSE)** unless otherwise noted in a specific file.
+
+**Container images and upstream applications** (for example Plex, Pi-hole, Ollama) remain under their **respective upstream licenses**; this repo only provides example Compose wiring. You are responsible for complying with each vendor’s terms when you run their software.

@@ -1,0 +1,10 @@
+# Example upsmon.conf — copy to ./local/upsmon.conf (create ./local/ first; see README).
+# Replace YOUR_PASSWORD_HERE with the same value as NUT_API_PASSWORD in .env.
+# Replace "ups" if you changed NUT_UPS_NAME.
+
+RUN_AS_USER root
+MINSUPPLIES 1
+SHUTDOWNCMD "/sbin/shutdown -h +0"
+POWERDOWNFLAG /etc/killpower
+DEADTIME 25
+MONITOR ups@localhost 1 upsmon YOUR_PASSWORD_HERE primary

@@ -1,0 +1,14 @@
+# Example upsmon.conf for NUT slave hosts — copy to ./local/upsmon.conf
+#
+# Replace MASTER_IP with the LAN IP of the machine running stacks/power/nut-master/
+# Replace YOUR_PASSWORD_HERE with the same value as NUT_API_PASSWORD on the master.
+# Replace "ups" if the master uses a different NUT_UPS_NAME.
+#
+# Default upsd port is 3493 — if your master uses another port, consult upsmon.conf(5) for your NUT version (syntax varies).
+
+RUN_AS_USER root
+MINSUPPLIES 1
+SHUTDOWNCMD "/sbin/poweroff"
+POWERDOWNFLAG /etc/killpower
+DEADTIME 25
+MONITOR ups@MASTER_IP 1 upsmon YOUR_PASSWORD_HERE slave

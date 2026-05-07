@@ -5,7 +5,8 @@ These standards keep stacks understandable, safer, and easier to support over ti
 ## File Conventions
 
 - Place each stack at **`stacks/<category>/<stack-name>/`** and document it in that category’s **`README.md`** (see [`stacks/README.md`](../stacks/README.md)).
-- Use `compose.yaml` (not `docker-compose.yml`).
+- Use **`compose.yaml`** as the Compose filename—not the legacy **`docker-compose.yml`** name.
+- **When upstream requires a different filename:** If official installers, update sidecars, or other bundled tooling **hard-code** a Compose path (for example **`compose.yml`** under a directory mounted like **`/opt/project-nomad`**), use **that** filename so behavior matches upstream. This should be **rare**—document the reason clearly in the stack **README.md** (link upstream when possible) and do not rename for repo consistency alone. Example in this repository: **[`stacks/knowledge/project-nomad/`](../stacks/knowledge/project-nomad/)**.
 - Include `.env.example` in every stack directory.
 - Do not commit live `.env` files.
 - Add stack-specific `README.md` when setup is not obvious.
@@ -46,6 +47,8 @@ These standards keep stacks understandable, safer, and easier to support over ti
   ```bash
   docker compose config
   ```
+
+  For a structural check without real secrets (used in CI), **`docker compose config --no-interpolate`** is sufficient.
 
 - Use `docker compose pull` before planned updates.
 - Review logs and health before marking a stack stable.

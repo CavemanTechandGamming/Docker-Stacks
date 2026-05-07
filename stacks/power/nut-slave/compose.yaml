@@ -1,0 +1,14 @@
+name: nut-slave
+
+# NUT slave — upsmon only, talks to a remote nut-master (instantlinux/nut-upsd) over the LAN.
+# Build once: docker compose build
+
+services:
+  nut-slave:
+    build: .
+    image: nut-slave:${NUT_SLAVE_IMAGE_TAG:-local}
+    restart: unless-stopped
+    privileged: true
+    pid: host
+    volumes:
+      - ${NUT_SLAVE_LOCAL_DIR:-./local}:/etc/nut/local:ro

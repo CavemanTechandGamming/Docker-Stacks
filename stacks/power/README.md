@@ -4,6 +4,7 @@
 
 ## Stacks
 
-- **[nut-upsd](nut-upsd/)** — Network UPS Tools (`nut-upsd`) via Docker
+- **[nut-master](nut-master/)** — NUT **master**: USB UPS + **`upsd`** + **`upsmon`** ([instantlinux/nut-upsd](https://hub.docker.com/r/instantlinux/nut-upsd))
+- **[nut-slave](nut-slave/)** — NUT **slave**: **`upsmon`** only, subscribes to a **`nut-master`** over the LAN (local Alpine-based image)
 
 If you add another power / UPS stack, put it in this folder and list it here.

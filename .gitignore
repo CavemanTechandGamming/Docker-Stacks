@@ -51,7 +51,8 @@ stacks/networking/wireguard/config/
 stacks/networking/openconnect/config/
 
 # NUT optional local overrides (may contain UPS-specific config)
-stacks/power/nut-upsd/local/
+stacks/power/nut-master/local/
+stacks/power/nut-slave/local/
 
 # FreshRSS application data (per stack)
 stacks/productivity/freshrss/config/
