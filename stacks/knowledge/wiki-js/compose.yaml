@@ -1,0 +1,67 @@
+name: wiki-js
+
+# Wiki.js — collaborative wiki / knowledge base (research row #135). Not MediaWiki (Wikipedia’s engine).
+
+services:
+  db:
+    image: ${WIKIJS_POSTGRES_IMAGE:-postgres:16-alpine}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      POSTGRES_DB: ${WIKIJS_DB_NAME:-wiki}
+      POSTGRES_USER: ${WIKIJS_DB_USER:-wikijs}
+      POSTGRES_PASSWORD: ${WIKIJS_DB_PASSWORD:?set_WIKIJS_DB_PASSWORD_in_env}
+    volumes:
+      - wiki-js-pgdata:/var/lib/postgresql/data
+    networks:
+      - wiki-js-net
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${WIKIJS_DB_USER:-wikijs} -d ${WIKIJS_DB_NAME:-wiki}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  wiki:
+    image: ${WIKIJS_IMAGE:-ghcr.io/requarks/wiki:2.5.307}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${WIKIJS_DB_USER:-wikijs}
+      DB_PASS: ${WIKIJS_DB_PASSWORD:?set_WIKIJS_DB_PASSWORD_in_env}
+      DB_NAME: ${WIKIJS_DB_NAME:-wiki}
+    ports:
+      - "${WIKIJS_PORT:-3030}:3000"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fsS http://127.0.0.1:3000/ >/dev/null || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - wiki-js-net
+
+volumes:
+  wiki-js-pgdata:
+
+networks:
+  wiki-js-net:
+    driver: bridge

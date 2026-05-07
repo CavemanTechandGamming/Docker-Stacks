@@ -1,0 +1,29 @@
+name: filebrowser
+
+# File Browser — lightweight web UI to browse and share host-mounted folders (research rows #50 / #51).
+
+services:
+  filebrowser:
+    image: ${FILEBROWSER_IMAGE:-filebrowser/filebrowser:v2.32.0}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "${FILEBROWSER_PORT:-8090}:80"
+    volumes:
+      - ${FILEBROWSER_ROOT:-./srv}:/srv
+      - filebrowser-db:/database
+    command:
+      - --address=0.0.0.0
+      - --database=/database/filebrowser.db
+      - --root=/srv
+    networks:
+      - filebrowser-net
+
+networks:
+  filebrowser-net:
+    driver: bridge
+
+volumes:
+  filebrowser-db:

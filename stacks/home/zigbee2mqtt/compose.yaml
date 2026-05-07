@@ -1,0 +1,24 @@
+name: zigbee2mqtt
+
+# Zigbee2MQTT — Zigbee coordinator → MQTT (pairs with home/mosquitto/) (research row #172).
+
+services:
+  zigbee2mqtt:
+    image: ${ZIGBEE2MQTT_IMAGE:-koenkk/zigbee2mqtt:2.1.3}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - ./data:/app/data
+    ports:
+      - "${ZIGBEE2MQTT_PORT:-8091}:8080"
+    # Map your Zigbee coordinator (Sonoff ZBDongle-E / CC2652 / etc.).
+    # devices:
+    #   - /dev/ttyACM0:/dev/ttyACM0
+    networks:
+      - z2m-net
+
+networks:
+  z2m-net:
+    driver: bridge

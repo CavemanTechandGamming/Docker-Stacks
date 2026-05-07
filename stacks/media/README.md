@@ -12,4 +12,4 @@
 - **[open-ebooks](open-ebooks/)** — OpenBooks (IRC eBook search; see README for triage note vs “OpenEBOOKS”)
 - **[open-audio](open-audio/)** — Navidrome (self-hosted music; folder name matches triage “Open Audio”)
 
-If you add another media stack, put it in this folder and list it here.
+If you add a stack here, list it above and follow **[docs/standards.md](../../docs/standards.md)** and **[CONTRIBUTING.md](../../CONTRIBUTING.md)**.

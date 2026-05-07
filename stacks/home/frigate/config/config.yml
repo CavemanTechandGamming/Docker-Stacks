@@ -1,0 +1,11 @@
+# Minimal starter — edit per https://docs.frigate.video/configuration/
+
+mqtt:
+  enabled: false
+
+detectors:
+  cpu:
+    type: cpu
+
+# Define cameras here (RTSP paths, roles, zones). The UI guides first-time setup.
+cameras: {}

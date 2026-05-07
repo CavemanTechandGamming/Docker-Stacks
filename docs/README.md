@@ -20,7 +20,7 @@ The **beginner**, **intermediate**, and **production** guides are written to sta
 |----------|---------|
 | **[standards.md](standards.md)** | Compose layout, env files, networking, and operations expectations for new stacks. |
 | **[CONTRIBUTING.md](../CONTRIBUTING.md)** | How to contribute stacks or docs; validation commands before opening a PR. |
-| **[research-self-hosted-apps.md](research-self-hosted-apps.md)** | How research / triage notes relate to adding stacks (including optional local exports kept out of Git). |
+| **[research-self-hosted-apps.md](research-self-hosted-apps.md)** | Research triage workflow, optional **`.local.md`** export, and an index of **existing** `stacks/` paths by category. |
 
 ## Optional / personal
 

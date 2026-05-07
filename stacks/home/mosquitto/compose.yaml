@@ -1,0 +1,34 @@
+name: mosquitto
+
+# Eclipse Mosquitto — lightweight MQTT broker for IoT and automation (research rows #150 / #152).
+
+services:
+  mosquitto:
+    image: ${MOSQUITTO_IMAGE:-eclipse-mosquitto:2}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "${MOSQUITTO_PORT:-1883}:1883"
+      # Optional WebSockets — uncomment after extending config/mosquitto.conf (see README).
+      # - "${MOSQUITTO_WS_PORT:-9001}:9001"
+    volumes:
+      - ./config:/mosquitto/config
+      - ${MOSQUITTO_DATA_DIR:-./data}:/mosquitto/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mosquitto_sub -h localhost -t '$$SYS/broker/uptime' -C 1 -W 3 >/dev/null 2>&1 || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - mqtt-net
+
+networks:
+  mqtt-net:
+    driver: bridge

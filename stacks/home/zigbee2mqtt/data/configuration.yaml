@@ -1,0 +1,20 @@
+# Edit mqtt.server to reach your Eclipse Mosquitto stack (home/mosquitto/) — see README.
+# Serial path must match your Zigbee USB stick (often /dev/ttyACM0 or /dev/ttyUSB0).
+
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://172.17.0.1:1883
+  user: ""
+  password: ""
+
+serial:
+  port: /dev/ttyACM0
+
+frontend:
+  enabled: true
+  port: 8080
+
+advanced:
+  log_level: info
+
+homeassistant: false

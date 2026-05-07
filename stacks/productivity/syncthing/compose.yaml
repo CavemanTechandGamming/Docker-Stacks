@@ -1,0 +1,31 @@
+name: syncthing
+
+# Official Syncthing image — continuous folder sync between your machines (research row #74).
+
+services:
+  syncthing:
+    image: ${SYNCTHING_IMAGE:-syncthing/syncthing:2.0}
+    restart: unless-stopped
+    hostname: ${SYNCTHING_HOSTNAME:-syncthing}
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TZ: ${TZ:-UTC}
+      # Publish the web UI on the container's mapped port (default binds loopback only).
+      STGUIADDRESS: ${SYNCTHING_GUI_ADDRESS:-0.0.0.0:8384}
+    ports:
+      - "${SYNCTHING_GUI_PORT:-8384}:8384/tcp"
+      - "${SYNCTHING_SYNC_TCP_PORT:-22000}:22000/tcp"
+      - "${SYNCTHING_SYNC_UDP_PORT:-22000}:22000/udp"
+      - "${SYNCTHING_LOCAL_DISCOVERY_UDP_PORT:-21027}:21027/udp"
+    volumes:
+      - ${SYNCTHING_CONFIG_DIR:-./config}:/var/syncthing
+      # Optional bind mount for folders you map inside Syncthing as /sync (create ./sync on the host first).
+      # - ${SYNCTHING_SYNC_DIR:-./sync}:/sync
+    networks:
+      - syncthing-net
+
+networks:
+  syncthing-net:
+    driver: bridge

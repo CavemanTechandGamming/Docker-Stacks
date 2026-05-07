@@ -1,0 +1,32 @@
+name: frigate
+
+# Frigate — local NVR with object detection (research row #142).
+
+services:
+  frigate:
+    image: ${FRIGATE_IMAGE:-ghcr.io/blakeblackshear/frigate:0.14.1}
+    restart: unless-stopped
+    shm_size: ${FRIGATE_SHM_SIZE:-128mb}
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - ./config:/config
+      - ${FRIGATE_MEDIA_DIR:-./media}:/media/frigate
+      - type: tmpfs
+        target: /tmp/cache
+        tmpfs:
+          size: 1000000000
+    ports:
+      - "${FRIGATE_WEB_PORT:-8971}:5000"
+      - "${FRIGATE_RTSP_PORT:-8554}:8554"
+      - "${FRIGATE_TCP_PORT:-8555}:8555/tcp"
+    # Uncomment for Coral USB / Gen1 sticks (see README).
+    # devices:
+    #   - /dev/bus/usb:/dev/bus/usb
+    networks:
+      - frigate-net
+
+networks:
+  frigate-net:
+    driver: bridge

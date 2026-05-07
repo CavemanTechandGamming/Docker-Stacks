@@ -1,0 +1,30 @@
+name: sftpgo
+
+# SFTPGo — SFTP / FTPS / WebDAV / HTTP(S) file access with a web admin UI (research row #70).
+
+services:
+  sftpgo:
+    image: ${SFTPGO_IMAGE:-drakkan/sftpgo:v2.6.4}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      SFTPGO_DEFAULT_ADMIN_USERNAME: ${SFTPGO_ADMIN_USERNAME:?set_SFTPGO_ADMIN_USERNAME_in_env}
+      SFTPGO_DEFAULT_ADMIN_PASSWORD: ${SFTPGO_ADMIN_PASSWORD:?set_SFTPGO_ADMIN_PASSWORD_in_env}
+      SFTPGO_HTTPD__BINDINGS__0__ADDRESS: 0.0.0.0
+      SFTPGO_HTTPD__BINDINGS__0__PORT: 8080
+      SFTPGO_SFTPD__BINDINGS__0__ADDRESS: 0.0.0.0
+      SFTPGO_SFTPD__BINDINGS__0__PORT: 2022
+    volumes:
+      - ${SFTPGO_LIB_DIR:-./lib}:/var/lib/sftpgo
+      - ${SFTPGO_FILES_DIR:-./srv}:/srv/sftpgo
+    ports:
+      - "${SFTPGO_WEB_PORT:-8089}:8080"
+      - "${SFTPGO_SFTP_PORT:-2022}:2022"
+    networks:
+      - sftpgo-net
+
+networks:
+  sftpgo-net:
+    driver: bridge

@@ -1,52 +1,47 @@
 # Self-hosted apps research — working notes
 
-This file is **tracked in Git**: it explains how to use the scratchpad and how it differs from your private roadmap.
+This file is **tracked in Git**. It explains how the **research export** relates to this repository: triage, provenance, and a **single index of stacks that already exist** under **`stacks/`**.
 
-- **Private roadmap (phased delivery):** `homelab-roadmap.md` — gitignored; what you actually plan to run.
-- **Private research archive (big dump):** `research-self-hosted-apps.local.md` — gitignored; verbatim export from external research (e.g. Manus AI) while you triage. On your machine it can be regenerated from the Cursor chat transcript that contained the paste (search for `Top 200+ Self-Hosted`), or you can replace the file manually after a fresh clone.
+For **category definitions** and conventions, see **[`stacks/README.md`](../stacks/README.md)** and **[`standards.md`](standards.md)**. For **contribution workflow**, see **[`CONTRIBUTING.md`](../CONTRIBUTING.md)**.
 
-**Treat the research dump as unvetted.** Image names, links, licensing, and “privacy” claims were not verified against this repo’s standards. Prefer official docs before adding a stack.
+- **Private roadmap (optional):** **`homelab-roadmap.md`** — typically **gitignored** (see **`.gitignore`**); your own phased plan.
+- **Private research archive:** **`research-self-hosted-apps.local.md`** — **gitignored**; large verbatim export (e.g. Manus AI) while you triage. Regenerate or replace after a fresh clone if you use it.
 
-## How to use this (temporary)
+**Treat the research dump as unvetted.** Image names, links, licensing, and privacy claims were not verified against this repo. Prefer **official upstream docs** and this repo’s **`stacks/<category>/<stack>/README.md`** before you deploy.
 
-1. Open **`research-self-hosted-apps.local.md`** for the **full 339-row tables** (gitignored; on this machine it was generated from your Cursor chat export).
-2. Use the **category triage table** below (or annotate the `.local.md` directly) with **Yes** / **Maybe** / **No** / **Already in repo**.
-3. When something graduates to real work, add it to **`homelab-roadmap.md`** and/or a new folder under **`stacks/<category>/`** (see [`stacks/README.md`](../stacks/README.md)).
-4. Delete or shrink the `.local.md` archive when you no longer need the raw list.
+## How to use this document
 
-## Stacks already in this repo (`stacks/<category>/…`)
+1. Open **`research-self-hosted-apps.local.md`** for the **full row-level table** (when present on your machine).
+2. Use the **category triage** table below with **Yes** / **Maybe** / **No** / **Already in repo** (or annotate the `.local.md` directly).
+3. Before adding a stack, check **[Stacks in this repository](#stacks-in-this-repository)** to avoid duplicates.
+4. When something graduates to implementation: add **`stacks/<category>/<stack-name>/`**, list it in that category’s **`README.md`**, update this index if the role is new, and record personal plans in **`homelab-roadmap.md`** if you maintain one.
+5. Delete or shrink **`.local.md`** when you no longer need the raw export.
 
-Cross-check before duplicating effort:
+## Stacks in this repository
 
-| Area | Path |
-|------|------|
-| Template | `_template/` |
-| DNS / ads | `networking/pihole-unbound/` |
-| Reverse proxy | `networking/caddy/` |
-| Homelab dashboard | `networking/homepage/` ([Homepage](https://gethomepage.dev/)) |
-| Docker management UI | `networking/portainer/` |
-| VPN | `networking/wireguard/`, `networking/openconnect/` |
-| Passwords | `security/vaultwarden/` |
-| Backups (UI) | `backup/duplicati/` |
-| Backups (restic target) | `backup/restic-rest-server/` |
-| Files / groupware | `productivity/nextcloud/` |
-| RSS | `productivity/freshrss/` |
-| Git hosting | `development/forgejo/` |
-| Meta-search | `search/searxng/` |
-| Uptime / metrics / logs | `monitoring/uptime-kuma/`, `monitoring/prometheus-grafana/` |
-| Photos | `media/immich/` |
-| Media | `media/plex/`, `media/jellyfin/`, `media/audiobookshelf/`, `media/kavita/`, `media/open-ebooks/`, `media/open-audio/` |
-| Home automation | `home/home-assistant/` |
-| Local AI | `ai/ollama-open-webui/`, `ai/openclaw/`, `ai/paperclip/`, `ai/automatic1111-webui/`, `ai/comfyui/` |
-| Offline knowledge | `knowledge/project-nomad/` |
-| UPS / NUT master | `power/nut-master/` |
-| UPS / NUT slave | `power/nut-slave/` |
+Compose projects live at **`stacks/<category>/<stack-name>/`**. Most use **`compose.yaml`**; rare upstream exceptions use **`compose.yml`** (see **`standards.md`**). Details are in each stack’s **`README.md`**.
 
-Research names that overlap (different branding, same role): Pi-hole, Jellyfin, Plex, Nextcloud, WireGuard, Vaultwarden, Caddy, SearXNG, FreshRSS, Gitea → Forgejo, etc.
+| Category | Paths (under `stacks/`) |
+|----------|-------------------------|
+| **Scaffolding** | `_template/` |
+| **AI** | `ai/automatic1111-webui/`, `ai/comfyui/`, `ai/ollama-open-webui/`, `ai/openclaw/`, `ai/paperclip/` |
+| **Backup** | `backup/duplicati/`, `backup/minio/`, `backup/restic-rest-server/` |
+| **Development** | `development/forgejo/` |
+| **Home** | `home/frigate/`, `home/home-assistant/`, `home/mosquitto/`, `home/zigbee2mqtt/` |
+| **Knowledge** | `knowledge/project-nomad/`, `knowledge/wiki-js/` |
+| **Media** | `media/audiobookshelf/`, `media/immich/`, `media/jellyfin/`, `media/kavita/`, `media/open-audio/`, `media/open-ebooks/`, `media/plex/` |
+| **Monitoring** | `monitoring/prometheus-grafana/`, `monitoring/uptime-kuma/` |
+| **Networking** | `networking/caddy/`, `networking/filebrowser/`, `networking/homepage/`, `networking/openconnect/`, `networking/pihole-unbound/`, `networking/portainer/`, `networking/sftpgo/`, `networking/wireguard/` |
+| **Power** | `power/nut-master/`, `power/nut-slave/` |
+| **Productivity** | `productivity/freshrss/`, `productivity/joplin-server/`, `productivity/nextcloud/`, `productivity/paperless-ngx/`, `productivity/syncthing/` |
+| **Search** | `search/searxng/` |
+| **Security** | `security/vaultwarden/` |
+
+**Name collisions in research exports** (same role, different branding): Pi-hole, Jellyfin, Plex, Nextcloud, WireGuard, Vaultwarden, Caddy, SearXNG, FreshRSS; **Gitea** ↔ this repo’s **Forgejo**, etc.
 
 ## Category triage (fill in)
 
-Use this when you do not want row-by-row noise yet:
+Use when you do not want row-by-row noise in **`.local.md`** yet:
 
 | Category | Interest (Yes / Maybe / No) | Notes |
 |----------|-----------------------------|-------|
@@ -61,11 +56,11 @@ Use this when you do not want row-by-row noise yet:
 | Security & Privacy | | |
 | Social Media & Content | | |
 
-## Essential Docker Compose Examples (from research export)
+## Docker Compose snippets from the research export
 
-*Included here for quick reference; validate against current image docs before use.*
+*Illustrative only.* Images, ports, and layouts **do not** match every stack in this repo verbatim. **Shipped stacks** in **`stacks/`** are the source of truth (this repo uses **Pi-hole + Unbound** together, not standalone Pi-hole, etc.). Validate any snippet against current upstream docs before use.
 
-### 1. Pi-hole (Network-wide Ad Blocking)
+### 1. Pi-hole (standalone example)
 
 ```yaml
 services:
@@ -85,7 +80,7 @@ services:
     restart: unless-stopped
 ```
 
-### 2. Plex Media Server
+### 2. Plex Media Server (LinuxServer-style example)
 
 ```yaml
 services:
@@ -107,4 +102,4 @@ services:
 
 ---
 
-*Research export footer (for provenance): Total Applications Listed: 339 — attributed in source to Manus AI.*
+*Research export provenance (attribution in source): **339** applications listed — Manus AI.*

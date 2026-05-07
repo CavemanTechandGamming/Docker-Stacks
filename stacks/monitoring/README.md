@@ -7,4 +7,4 @@
 - **[uptime-kuma](uptime-kuma/)** — Uptime Kuma
 - **[prometheus-grafana](prometheus-grafana/)** — Prometheus + Grafana + Loki + Promtail
 
-If you add another monitoring stack, put it in this folder and list it here.
+If you add a stack here, list it above and follow **[docs/standards.md](../../docs/standards.md)** and **[CONTRIBUTING.md](../../CONTRIBUTING.md)**.

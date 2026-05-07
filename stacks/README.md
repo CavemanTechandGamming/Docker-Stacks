@@ -1,24 +1,26 @@
 # Stacks by category
 
-Each subfolder under `stacks/` is a **category** (what the workloads are for). The actual Compose projects live one level deeper: `stacks/<category>/<stack-name>/`.
+Each immediate subfolder of **`stacks/`** is a **category** (what the workloads are for). Compose projects live one level deeper: **`stacks/<category>/<stack-name>/`**.
 
-Each category folder has a **`README.md`** that explains what belongs there and lists the stacks in that category. (Folders typically sort before files in file listings, so those stack folders appear above the category `README.md` — that’s normal.)
+Most stacks ship **`compose.yaml`**. A few upstream projects require **`compose.yml`** instead—see **[`docs/standards.md`](../docs/standards.md)**.
+
+Each category has its own **`README.md`** that describes the group and **lists every stack folder** in that category. In file listings, stack folders often appear **above** the category **`README.md`**; that sort order is normal.
 
 | Category | What belongs here |
 |----------|-------------------|
-| [`ai/`](ai/) | Local LLMs, chat UIs, agent gateways (e.g. OpenClaw, Paperclip), and related AI tooling |
+| [`ai/`](ai/) | Local LLMs, chat UIs, agent gateways (e.g. OpenClaw, Paperclip), image generation UIs |
+| [`backup/`](backup/) | Backup UIs, **restic** REST targets, **S3**-compatible storage (MinIO) for backup and app use |
+| [`development/`](development/) | Git forge and related developer infrastructure (e.g. Forgejo) |
+| [`home/`](home/) | Home automation, IoT, MQTT/Zigbee bridges, **CCTV/NVR** (e.g. Home Assistant, Frigate) |
+| [`knowledge/`](knowledge/) | Wikis, reference libraries, research “command center” stacks (not personal note sync—see **productivity**) |
 | [`media/`](media/) | Video, music, photos, audiobooks, ebooks — libraries and streaming |
-| [`home/`](home/) | Home automation and IoT (e.g. Home Assistant) |
-| [`backup/`](backup/) | Backup UIs and backup-related tooling |
-| [`networking/`](networking/) | DNS, reverse proxy, VPN (WireGuard, OpenConnect), homelab dashboard (Homepage), Docker UI (Portainer) — how traffic enters the lab |
-| [`security/`](security/) | Identity-adjacent services (e.g. passwords, auth helpers) |
-| [`productivity/`](productivity/) | Files, feeds, calendars — day-to-day collaboration |
-| [`development/`](development/) | Git forge, CI-adjacent tools, developer infrastructure |
-| [`monitoring/`](monitoring/) | Uptime, health checks, observability |
+| [`monitoring/`](monitoring/) | Uptime checks, metrics, logs, dashboards |
+| [`networking/`](networking/) | DNS, reverse proxy, VPN, homelab dashboard (Homepage), Docker UI (Portainer), edge file access (SFTPGo, File Browser) |
+| [`power/`](power/) | UPS, power-fail, and NUT master/slave patterns |
+| [`productivity/`](productivity/) | Files, sync, feeds, calendars, document archives (Paperless), note sync (e.g. Joplin Server) |
 | [`search/`](search/) | Search and meta-search (privacy-oriented) |
-| [`knowledge/`](knowledge/) | Offline or local-first knowledge / research stacks |
-| [`power/`](power/) | UPS, power-fail, and related hardware bridges |
+| [`security/`](security/) | Passwords and identity helpers (e.g. Vaultwarden) |
 
-**Scaffolding:** [`_template/`](_template/) — copy when adding a stack; place the new folder under the category that fits best, then add a link in that category’s `README.md`.
+**Scaffolding:** [`_template/`](_template/) — copy when adding a stack; place it under the best-fitting category, list it in that category’s **`README.md`**, and follow **[`docs/standards.md`](../docs/standards.md)** and **[`CONTRIBUTING.md`](../CONTRIBUTING.md)** (including **`docker compose config --no-interpolate`** before you commit).
 
-**Run a stack:** from its directory, e.g. `stacks/media/plex/`, run `docker compose up -d` (after copying `.env.example` → `.env`).
+**Run a stack:** from its directory (e.g. **`stacks/media/plex/`**): copy **`.env.example`** → **`.env`**, then **`docker compose up -d`**.

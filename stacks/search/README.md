@@ -6,4 +6,4 @@
 
 - **[searxng](searxng/)** — SearXNG
 
-If you add another search stack, put it in this folder and list it here.
+If you add a stack here, list it above and follow **[docs/standards.md](../../docs/standards.md)** and **[CONTRIBUTING.md](../../CONTRIBUTING.md)**.

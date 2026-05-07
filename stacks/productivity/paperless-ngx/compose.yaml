@@ -1,0 +1,78 @@
+name: paperless-ngx
+
+# Paperless-ngx — document archive for PDFs and scans (research rows #257 / #258).
+
+services:
+  broker:
+    image: ${REDIS_IMAGE:-redis:7-alpine}
+    restart: unless-stopped
+    networks:
+      - paperless-net
+
+  db:
+    image: ${POSTGRES_IMAGE:-postgres:16-alpine}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-paperless}
+      POSTGRES_USER: ${POSTGRES_USER:-paperless}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set_POSTGRES_PASSWORD_in_env}
+    volumes:
+      - paperless-pgdata:/var/lib/postgresql/data
+    networks:
+      - paperless-net
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-paperless} -d ${POSTGRES_DB:-paperless}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  webserver:
+    image: ${PAPERLESS_IMAGE:-ghcr.io/paperless-ngx/paperless-ngx:2.14}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      broker:
+        condition: service_started
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "${PAPERLESS_PORT:-8000}:8000"
+    volumes:
+      - paperless-data:/usr/src/paperless/data
+      - paperless-media:/usr/src/paperless/media
+      - paperless-export:/usr/src/paperless/export
+      - ${PAPERLESS_CONSUME_DIR:-./consume}:/usr/src/paperless/consume
+    environment:
+      PAPERLESS_REDIS: redis://broker:6379
+      PAPERLESS_DBHOST: db
+      PAPERLESS_DBNAME: ${POSTGRES_DB:-paperless}
+      PAPERLESS_DBUSER: ${POSTGRES_USER:-paperless}
+      PAPERLESS_DBPASS: ${POSTGRES_PASSWORD:?set_POSTGRES_PASSWORD_in_env}
+      PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRET_KEY:?set_PAPERLESS_SECRET_KEY_in_env}
+      PAPERLESS_URL: ${PAPERLESS_URL:-http://127.0.0.1:8000}
+      PAPERLESS_TIME_ZONE: ${TZ:-UTC}
+      PAPERLESS_OCR_LANGUAGE: ${PAPERLESS_OCR_LANGUAGE:-eng}
+      USERMAP_UID: ${PAPERLESS_UID:-1000}
+      USERMAP_GID: ${PAPERLESS_GID:-1000}
+    networks:
+      - paperless-net
+
+volumes:
+  paperless-pgdata:
+  paperless-data:
+  paperless-media:
+  paperless-export:
+
+networks:
+  paperless-net:
+    driver: bridge
