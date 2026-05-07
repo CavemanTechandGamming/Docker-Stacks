@@ -52,7 +52,7 @@ Older **Lenovo Yoga** convertible *(exact model name not recorded)* — **AMP** 
 
 ## **Obsidian Rainbow** (main PC — gaming + daily driver)
 
-ComfyUI and Ollama + Open WebUI run **here**, not on **cave-server**. This is also your **primary** Windows machine for gaming and general use.
+ComfyUI, Ollama + Open WebUI, and FileFlows run **here**, not on **cave-server**. FileFlows **was installed as a native Windows app** on this machine; the preferred direction is **`stacks/media/fileflows/`** (Docker/WSL stack in this repo) so config matches the rest of your lab. This is also your **primary** Windows machine for gaming and general use.
 
 | | |
 |--|--|
@@ -73,6 +73,7 @@ ComfyUI and Ollama + Open WebUI run **here**, not on **cave-server**. This is al
 |-------|-------------------|
 | **ComfyUI** | [`stacks/ai/comfyui/`](../stacks/ai/comfyui/) |
 | **Ollama + Open WebUI** | [`stacks/ai/ollama-open-webui/`](../stacks/ai/ollama-open-webui/) |
+| **FileFlows** *(media processing automation)* | **`stacks/media/fileflows/`** — [Docker install](https://fileflows.com/docs/installation/docker) **(target)**; previously **native Windows** install on **Obsidian Rainbow** |
 
 ## Still to verify
 

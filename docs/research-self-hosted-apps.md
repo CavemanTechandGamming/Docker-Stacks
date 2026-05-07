@@ -29,13 +29,13 @@ Compose projects live at **`stacks/<category>/<stack-name>/`**. Most use **`comp
 | **Development** | `development/forgejo/` |
 | **Home** | `home/frigate/`, `home/home-assistant/`, `home/mosquitto/`, `home/zigbee2mqtt/` |
 | **Knowledge** | `knowledge/project-nomad/`, `knowledge/wiki-js/` |
-| **Media** | `media/audiobookshelf/`, `media/immich/`, `media/jellyfin/`, `media/kavita/`, `media/open-audio/`, `media/open-ebooks/`, `media/plex/` |
+| **Media** | `media/audiobookshelf/`, `media/fileflows/`, `media/immich/`, `media/jellyfin/`, `media/kavita/`, `media/open-audio/`, `media/open-ebooks/`, `media/plex/` |
 | **Monitoring** | `monitoring/prometheus-grafana/`, `monitoring/uptime-kuma/` |
-| **Networking** | `networking/caddy/`, `networking/filebrowser/`, `networking/homepage/`, `networking/openconnect/`, `networking/pihole-unbound/`, `networking/portainer/`, `networking/sftpgo/`, `networking/wireguard/` |
+| **Networking** | `networking/caddy/`, `networking/filebrowser/`, `networking/headscale/`, `networking/homepage/`, `networking/netbird/`, `networking/openconnect/`, `networking/pihole-unbound/`, `networking/portainer/`, `networking/sftpgo/`, `networking/wireguard/` |
 | **Power** | `power/nut-master/`, `power/nut-slave/` |
 | **Productivity** | `productivity/freshrss/`, `productivity/joplin-server/`, `productivity/nextcloud/`, `productivity/paperless-ngx/`, `productivity/syncthing/` |
-| **Search** | `search/searxng/` |
-| **Security** | `security/vaultwarden/` |
+| **Search** | `search/searxng/`, `search/whoogle/`, `search/yacy/` |
+| **Security** | `security/authelia/`, `security/authentik/`, `security/crowdsec/`, `security/oauth2-proxy/`, `security/vaultwarden/` |
 
 **Name collisions in research exports** (same role, different branding): Pi-hole, Jellyfin, Plex, Nextcloud, WireGuard, Vaultwarden, Caddy, SearXNG, FreshRSS; **Gitea** ↔ this repo’s **Forgejo**, etc.
 

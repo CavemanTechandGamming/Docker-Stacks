@@ -1,0 +1,34 @@
+name: headscale
+
+# Headscale — self-hosted coordination server compatible with Tailscale clients.
+# Docs: https://headscale.net/
+
+services:
+  headscale:
+    image: ${HEADSCALE_IMAGE:-headscale/headscale:0.25.1}
+    restart: unless-stopped
+    read_only: true
+    env_file:
+      - path: .env
+        required: false
+    command: serve
+    tmpfs:
+      - /var/run/headscale
+    volumes:
+      - ./config:/etc/headscale:ro
+      - ${HEADSCALE_LIB_DIR:-./lib}:/var/lib/headscale
+    ports:
+      - "${HEADSCALE_HTTP_PORT:-8088}:8080"
+      - "${HEADSCALE_METRICS_PORT:-9190}:9090"
+    healthcheck:
+      test: ["CMD", "headscale", "health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - headscale-net
+
+networks:
+  headscale-net:
+    driver: bridge

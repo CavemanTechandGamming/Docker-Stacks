@@ -1,0 +1,47 @@
+name: authelia
+
+# Authelia — forward-auth, MFA, and access policies (pair with **`networking/caddy/`** or Traefik).
+
+services:
+  authelia:
+    image: ${AUTHELIA_IMAGE:-docker.io/authelia/authelia:4.38.19}
+    restart: unless-stopped
+    # Project `.env` is read by Compose for `${AUTHELIA_HTTP_PORT}` etc.; do not attach the whole file here
+    # or keys like AUTHELIA_HTTP_PORT are passed into Authelia and logged as unexpected.
+    environment:
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ./config:/config
+    ports:
+      - "${AUTHELIA_HTTP_PORT:-9091}:9091"
+    networks:
+      - authelia-net
+    depends_on:
+      redis:
+        condition: service_started
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://127.0.0.1:9091/api/health >/dev/null 2>&1 || exit 1",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 45s
+
+  redis:
+    image: ${AUTHELIA_REDIS_IMAGE:-docker.io/library/redis:7-alpine}
+    restart: unless-stopped
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis-data:/data
+    networks:
+      - authelia-net
+
+networks:
+  authelia-net:
+    driver: bridge
+
+volumes:
+  redis-data:

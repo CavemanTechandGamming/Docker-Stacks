@@ -1,0 +1,56 @@
+# NetBird combined server — template for Docker without Traefik in this repo.
+# Upstream reference: https://github.com/netbirdio/netbird/blob/main/combined/config.yaml.example
+#
+# Before `docker compose up`:
+# - Replace every `netbird.example.com` / `app.netbird.example.com` with your real hostnames.
+# - Set `server.authSecret` to a long random string (e.g. `openssl rand -hex 32`).
+# - Put HTTPS reverse proxy routes in front (Caddy/Nginx/Traefik) with correct gRPC/h2c handling — see NetBird docs.
+
+server:
+  # Inside the container the published compose port maps to :80 (see NetBird self-hosted docs).
+  listenAddress: ":80"
+
+  # Public URL peers and browsers use (must match your TLS certificate and DNS).
+  exposedAddress: "https://netbird.example.com"
+
+  metricsPort: 9090
+  healthcheckAddress: ":9000"
+  logLevel: "info"
+  logFile: "console"
+
+  tls:
+    certFile: ""
+    keyFile: ""
+    letsencrypt:
+      enabled: false
+      dataDir: ""
+      domains: []
+      email: ""
+      awsRoute53: false
+
+  authSecret: "CHANGE_ME_REPLACE_WITH_LONG_RANDOM_HEX"
+
+  dataDir: "/var/lib/netbird/"
+
+  disableAnonymousMetrics: false
+  disableGeoliteUpdate: false
+
+  auth:
+    issuer: "https://netbird.example.com/oauth2"
+    localAuthDisabled: false
+    signKeyRefreshEnabled: true
+    dashboardRedirectURIs:
+      - "https://app.netbird.example.com/nb-auth"
+      - "https://app.netbird.example.com/nb-silent-auth"
+    cliRedirectURIs:
+      - "http://localhost:53000/"
+
+    # Uncomment to bootstrap a first admin (strongly preferred over committing real passwords).
+    # owner:
+    #   email: "you@example.com"
+    #   password: "use-a-long-random-password"
+
+  store:
+    engine: "sqlite"
+    dsn: ""
+    encryptionKey: ""

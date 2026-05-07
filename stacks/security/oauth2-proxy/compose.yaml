@@ -1,0 +1,23 @@
+name: oauth2-proxy
+
+# OAuth2 Proxy — OAuth / OIDC login gate in front of an upstream (often paired with Caddy `reverse_proxy`).
+
+services:
+  oauth2-proxy:
+    image: ${OAUTH2_PROXY_IMAGE:-quay.io/oauth2-proxy/oauth2-proxy:v7.7.1}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    # `--email-domain` must be a real argv flag in v7; `${...}` is resolved from your project `.env` / shell.
+    command:
+      - --http-address=0.0.0.0:4180
+      - --email-domain=${OAUTH2_PROXY_EMAIL_DOMAIN:-*}
+    ports:
+      - "${OAUTH2_PROXY_PORT:-4180}:4180"
+    networks:
+      - oauth2-proxy-net
+
+networks:
+  oauth2-proxy-net:
+    driver: bridge

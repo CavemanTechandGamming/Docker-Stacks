@@ -1,0 +1,12 @@
+# File-based users for Authelia (no LDAP). Default password is: authelia
+# Regenerate: https://www.authelia.com/integration/reference/guides/passwords/
+---
+users:
+  authelia:
+    disabled: false
+    displayname: 'Authelia User'
+    password: '$argon2id$v=19$m=65536,t=3,p=4$qOKNq+u5lZHOTnsJY1Sp3g$s6zT9EKncfkmIJmykzZProUigRRJ26hlTl1WC+mG2do'
+    email: 'authelia@example.com'
+    groups:
+      - admins
+      - dev

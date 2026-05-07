@@ -1,6 +1,17 @@
 # Stack template
 
-Copy this folder when adding a new stack under the right **`stacks/<category>/`** (see [`../README.md`](../README.md)). Keep `compose.yaml`, `.env.example`, and a short `README.md` with **Official references** pointing at the upstream project’s repo and docs. Add a link to the new stack in that category’s `README.md`.
+Copy this folder when adding a stack under **`stacks/<category>/`** (see [`../README.md`](../README.md)). Preserve upstream-required filenames when their tooling hard-codes paths (for example **`compose.yml`** for Project Nomad—document the reason).
+
+Each new stack ships **`compose.yaml`** (unless upstream forbids renaming), **`.env.example`**, and a focused **`README.md`** with upstream links under **Official references**.
+
+When registering the stack, update that category’s **`README.md`** using the repo-wide blueprint:
+
+- Stacks listed **alphabetically** by directory name  
+- **`| Stack | Type | Description |`** table mirroring **`stacks/ai/README.md`**  
+- Short **type** label plus one professional sentence for **description**  
+- Footer reminding contributors about **`docker compose config --no-interpolate`**
+
+This template’s **`README.md`** is instructional only—replace it wholesale when you instantiate a real service.
 
 ## Official references
 

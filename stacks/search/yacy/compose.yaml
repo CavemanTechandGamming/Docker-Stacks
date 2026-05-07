@@ -1,0 +1,38 @@
+name: yacy
+
+# Layout derived from upstream Docker README:
+# https://github.com/yacy/yacy_search_server/blob/master/docker/README.md
+
+services:
+  yacy:
+    image: docker.io/yacy/yacy_search_server:${YACY_VERSION:-1.93}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "${YACY_PUBLISH_HTTP:-8090}:8090"
+      - "${YACY_PUBLISH_HTTPS:-8443}:8443"
+    volumes:
+      - yacy-data:/opt/yacy_search_server/DATA
+    logging:
+      driver: json-file
+      options:
+        max-size: "200m"
+        max-file: "2"
+    networks:
+      - yacy-net
+    healthcheck:
+      test:
+        ["CMD-SHELL", "wget -qO- http://127.0.0.1:8090/ >/dev/null 2>&1 || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 180s
+
+volumes:
+  yacy-data:
+
+networks:
+  yacy-net:
+    driver: bridge

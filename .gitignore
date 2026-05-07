@@ -82,9 +82,24 @@ stacks/home/home-assistant/config/
 stacks/media/kavita/config/
 stacks/media/kavita/data/
 
+# FileFlows runtime bind mounts (per stack — data contains SQLite and config)
+stacks/media/fileflows/data/
+stacks/media/fileflows/temp/
+stacks/media/fileflows/dockermods/
+stacks/media/fileflows/media/
+
 # OpenBooks downloads (per stack)
 stacks/media/open-ebooks/books/
 
 # Navidrome (“open-audio” stack) data and music roots (per stack)
 stacks/media/open-audio/data/
 stacks/media/open-audio/music/
+
+# Authelia runtime DB + notification file (per stack)
+stacks/security/authelia/config/db.sqlite3
+stacks/security/authelia/config/notification.txt
+
+# Authentik uploads, generated TLS material, custom templates (per stack)
+stacks/security/authentik/media/
+stacks/security/authentik/certs/
+stacks/security/authentik/custom-templates/

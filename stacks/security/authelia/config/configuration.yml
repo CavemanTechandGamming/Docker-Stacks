@@ -1,0 +1,55 @@
+# Authelia — template derived from https://github.com/authelia/authelia/tree/master/examples/compose/lite
+# Replace ALL example.com / secret strings before production. See README for Caddy forward-auth wiring.
+
+server:
+  address: 'tcp://0.0.0.0:9091'
+
+log:
+  level: info
+
+totp:
+  issuer: authelia
+
+identity_validation:
+  reset_password:
+    jwt_secret: 'replace_with_openssl_rand_hex_32_or_longer_string'
+
+authentication_backend:
+  file:
+    path: /config/users_database.yml
+
+access_control:
+  default_policy: deny
+  rules:
+    - domain: 'public.example.com'
+      policy: bypass
+    - domain: 'traefik.example.com'
+      policy: one_factor
+    - domain: 'secure.example.com'
+      policy: two_factor
+
+session:
+  secret: 'replace_with_session_secret_openssl_rand_hex_32'
+  cookies:
+    - name: authelia_session
+      domain: 'example.com'
+      authelia_url: 'https://authelia.example.com'
+      expiration: '1 hour'
+      inactivity: '5 minutes'
+  redis:
+    host: redis
+    port: 6379
+
+regulation:
+  max_retries: 3
+  find_time: 2m
+  ban_time: 5m
+
+storage:
+  encryption_key: 'replace_with_storage_encryption_key_min_20_chars'
+  local:
+    path: /config/db.sqlite3
+
+notifier:
+  filesystem:
+    filename: /config/notification.txt

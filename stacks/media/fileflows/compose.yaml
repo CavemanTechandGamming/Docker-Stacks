@@ -1,0 +1,48 @@
+name: fileflows
+
+# FileFlows — automated media / file processing (see README and https://fileflows.com/docs/installation/docker).
+
+services:
+  fileflows:
+    image: ${FILEFLOWS_IMAGE:-revenz/fileflows:26.04}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TZ: ${TZ:-UTC}
+    ports:
+      - "${FILEFLOWS_HTTP_PORT:-19200}:5000"
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
+      - type: bind
+        source: ${FILEFLOWS_DATA_DIR:-./data}
+        target: /app/Data
+      - type: bind
+        source: ${FILEFLOWS_TEMP_DIR:-./temp}
+        target: /temp
+      - type: bind
+        source: ${FILEFLOWS_MEDIA_DIR:-./media}
+        target: /media
+      - type: bind
+        source: ${FILEFLOWS_DOCKERMODS_DIR:-./dockermods}
+        target: /app/DockerMods
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fsS http://127.0.0.1:5000/ >/dev/null || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+    networks:
+      - fileflows-net
+
+networks:
+  fileflows-net:
+    driver: bridge

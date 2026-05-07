@@ -1,0 +1,39 @@
+name: netbird
+
+# NetBird — self-hosted control plane + dashboard (“combined server” image).
+# Setup is intentionally opinionated upstream; see README before trusting this layout in production.
+
+services:
+  netbird-server:
+    image: ${NETBIRD_SERVER_IMAGE:-netbirdio/netbird-server:0.65.3}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    command: ["--config", "/etc/netbird/config.yaml"]
+    volumes:
+      - ${NETBIRD_LIB_DIR:-./lib}:/var/lib/netbird
+      - ./config/config.yaml:/etc/netbird/config.yaml:ro
+    ports:
+      - "${NETBIRD_SERVER_HTTP_PORT:-8091}:80"
+      - "${NETBIRD_STUN_PORT:-3478}:3478/udp"
+    networks:
+      - netbird-net
+
+  dashboard:
+    image: ${NETBIRD_DASHBOARD_IMAGE:-netbirdio/dashboard:v2.37.1}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+      - dashboard.env
+    ports:
+      - "${NETBIRD_DASHBOARD_HTTP_PORT:-8092}:80"
+    depends_on:
+      - netbird-server
+    networks:
+      - netbird-net
+
+networks:
+  netbird-net:
+    driver: bridge

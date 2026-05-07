@@ -1,0 +1,29 @@
+name: crowdsec
+
+# CrowdSec — collaborative IPS engine; pair with proxy/firewall **bouncers** separately.
+
+services:
+  crowdsec:
+    image: ${CROWDSEC_IMAGE:-crowdsecurity/crowdsec:v1.6.11}
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TZ: ${TZ:-UTC}
+      COLLECTIONS: ${CROWDSEC_COLLECTIONS:-crowdsecurity/linux}
+    volumes:
+      - crowdsec-data:/var/lib/crowdsec/data
+      - crowdsec-config:/etc/crowdsec
+    ports:
+      - "${CROWDSEC_LAPI_PORT:-8980}:8080"
+    networks:
+      - crowdsec-net
+
+networks:
+  crowdsec-net:
+    driver: bridge
+
+volumes:
+  crowdsec-data:
+  crowdsec-config:
