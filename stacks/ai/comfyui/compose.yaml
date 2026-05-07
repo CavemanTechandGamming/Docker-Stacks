@@ -21,7 +21,9 @@ services:
     ports:
       - "${COMFYUI_PORT:-8188}:${COMFYUI_INTERNAL_PORT:-8188}"
     volumes:
-      - ${WORKSPACE_DIR:-./workspace}:${WORKSPACE:-/workspace}
+      - type: bind
+        source: ${WORKSPACE_DIR:-./workspace}
+        target: ${WORKSPACE:-/workspace}
     shm_size: "2gb"
     # Uncomment on Linux hosts with NVIDIA Container Toolkit (GPU inference).
     # gpus: all
