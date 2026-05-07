@@ -1,4 +1,4 @@
-# Validates Compose file syntax and merge resolution without requiring secrets.
+# Validates Compose file syntax without requiring secrets (no interpolation).
 name: Compose validate
 
 on:
@@ -6,21 +6,43 @@ on:
     branches: [main, master]
   pull_request:
 
+# GitHub-hosted runners are moving Actions off Node.js 20; opt in early where supported.
+# See https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   compose-config:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+
+      - name: Docker Compose version
+        run: docker compose version
 
       - name: Validate each stack
         run: |
           set -euo pipefail
+          if [[ ! -d stacks ]]; then
+            echo "::error::Expected stacks/ directory at repo root."
+            exit 1
+          fi
+
           count=0
           while IFS= read -r -d '' file; do
             dir=$(dirname "$file")
             base=$(basename "$file")
             echo "::group::$dir ($base)"
-            (cd "$dir" && docker compose -f "$base" config --no-interpolate >/dev/null)
+            if (cd "$dir" && docker compose -f "$base" config --no-interpolate >/dev/null); then
+              echo "OK"
+            else
+              echo "::error::compose config failed for $dir ($base)"
+              (cd "$dir" && docker compose -f "$base" config --no-interpolate || true)
+              exit 1
+            fi
             echo "::endgroup::"
             count=$((count + 1))
           done < <(find stacks -type f \( -name compose.yaml -o -name compose.yml \) -print0)
